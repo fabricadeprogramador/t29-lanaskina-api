@@ -3,70 +3,38 @@
 const Express = require("express");
 const Cors = require("cors");
 
+//Importação de rota
+const ConvidadoRoute = require("./routes/ConvidadoRoute");
+
 class App {
   constructor() {
     //app é a instância do Express - Inicialmente vazia, inicializado no init()
     this.exp;
-    this.convidados = [];
-    this.geradorId = 3;
   }
 
+  // Método que inicializa o servidor e escuta a porta com o serviço
   init() {
+    // Instanciando o Express
     this.exp = Express();
+
+    // Setando Cross Origin no Express para aceitar requisição de todos os Hosts
     this.exp.use(Cors());
+
+    //Setando o parser no Express para automaticamente converter respostas e requisições de JSON para Objeto JS e vice-versa
     this.exp.use(Express.json());
-    this.setarConvidados();
 
+    //Registrando a rota raíz da API
     this.exp.get("/", (req, res) => {
-      res.send("Seja bem-vindo(a) a API Lanaskina!");
+      res.send("<h1>Seja bem-vindo(a) a API Lanaskina!<h1>");
     });
 
-    this.exp.get("/convidados", (req, res) => {
-      res.status(200).json(this.convidados);
-    });
+    //Setando as outras rotas
+    new ConvidadoRoute(this.exp);
 
-    this.exp.post("/convidados", (req, res) => {
-      let novoConvidado = req.body;
-
-      if (novoConvidado.nome === undefined) {
-        res.status(500).send("Convidado inválido!");
-      } else {
-        novoConvidado._id = this.geradorId;
-        this.geradorId++;
-        this.convidados.push(novoConvidado);
-        res.status(200).json(novoConvidado);
-      }
-    });
-
+    // Escutando a porta 3000
     this.exp.listen(3000, () => {
       console.log("API Lanaskina rodando na porta 3000...");
     });
-  }
-
-  setarConvidados() {
-    this.convidados = [
-      {
-        _id: "0",
-        nome: "T29-Teste",
-        idade: "25",
-        sexo: "F",
-        __v: 0,
-      },
-      {
-        _id: "1",
-        nome: "Fetch Test ED",
-        idade: "12",
-        sexo: "M",
-        __v: 0,
-      },
-      {
-        _id: "2",
-        nome: "T29 - Cleiton Duarte EDITADO",
-        idade: "30",
-        sexo: "M",
-        __v: 0,
-      },
-    ];
   }
 }
 new App().init();
