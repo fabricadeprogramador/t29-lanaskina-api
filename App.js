@@ -1,7 +1,11 @@
 "use strict";
 
 const Express = require("express");
+const Mongoose = require("mongoose");
 const Cors = require("cors");
+
+//Importação dos modelos
+const Convidado = require("./models/Convidado");
 
 //Importação de rota
 const ConvidadoRoute = require("./routes/ConvidadoRoute");
@@ -23,9 +27,18 @@ class App {
     //Setando o parser no Express para automaticamente converter respostas e requisições de JSON para Objeto JS e vice-versa
     this.exp.use(Express.json());
 
+    //Conectar o Mongoose com o Banco de Dados (MongoDB Atlas)
+    Mongoose.connect(
+      "mongodb+srv://t29lanaskina:t29lanaskina@cluster0.zronz.mongodb.net/lanaskina-db?retryWrites=true&w=majority",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    );
+
     //Registrando a rota raíz da API
     this.exp.get("/", (req, res) => {
-      res.send("<h1>Seja bem-vindo(a) a API Lanaskina!<h1>");
+      res.send("<h1>Seja bem-vindo(a) a API Lanaskina!</h1>");
     });
 
     //Setando as outras rotas
@@ -38,3 +51,9 @@ class App {
   }
 }
 new App().init();
+
+//Nome do banco : lanaskina-db
+//User Password: t29lanaskina
+//User Name: t29lanaskina
+
+//link: mongodb+srv://<username>:<password>@cluster0.zronz.mongodb.net/<dbname>?retryWrites=true&w=majority
