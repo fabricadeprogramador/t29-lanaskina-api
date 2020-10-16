@@ -1,0 +1,13 @@
+{
+    "development" : {
+        "apiPort" : 3000,
+        "db" : {
+            "nome" : "lanaskina-db",
+            "protocolo" : "mongodb+srv",
+            "url" : "cluster0.zronz.mongodb.net",
+            "user" : "t29lanaskina",
+            "senha" : "t29lanaskina"
+        }
+    },
+    "production":{}
+}

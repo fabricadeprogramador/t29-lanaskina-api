@@ -1,6 +1,6 @@
 "use strict";
 
-const { Mongoose } = require("mongoose");
+const Mongoose = require("mongoose");
 
 class Convidado extends Mongoose.Schema {
   constructor() {
@@ -19,6 +19,7 @@ class Convidado extends Mongoose.Schema {
       },
     });
 
+    //Momento do registro do Schema do Mongoose
     Mongoose.model("Convidado", this);
   }
 }

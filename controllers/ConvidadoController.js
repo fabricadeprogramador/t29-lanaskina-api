@@ -3,69 +3,82 @@ const Mongoose = require("mongoose");
 const Convidado = Mongoose.model("Convidado");
 
 class ConvidadoController {
-  // static buscarTodos(req, res) {
-  //   res.status(200).json(convidados);
-  // }
-
   static async buscarTodos(req, res) {
     try {
       res.status(200).json(await Convidado.find({}));
     } catch (error) {
-      console.log("[Convidado Controller -> buscarTodos]: " + error);
+      console.log("[ConvidadoController -> buscarTodos]: " + error);
       res
         .status(500)
         .send("<p> Infelizmente houve um erro ou buscar convidados!</p>");
     }
   }
 
-  static adicionar(req, res) {
-    let novoConvidado = req.body;
+  static async buscarPorNome(req, res) {
+    let nomeBusca = req.params.nome;
 
-    if (novoConvidado.nome === undefined) {
-      res.status(500).send("Convidado inválido!");
-    } else {
-      novoConvidado._id = geradorId;
-      geradorId++;
-      convidados.push(novoConvidado);
-      res.status(200).json(novoConvidado);
+    if (!nomeBusca) res.status(400).send("<p> Nome não informado! </p>");
+
+    try {
+      res.status(200).json(
+        await Convidado.find({
+          nome: nomeBusca,
+        })
+      );
+    } catch (error) {
+      console.log("[ConvidadoController -> buscarPorNome]: " + error);
+      res
+        .status(500)
+        .send(
+          "<p> Infelizmente houve um erro ou buscar convidado por nome!</p>"
+        );
     }
   }
 
-  static deletar(req, res) {
+  static async adicionar(req, res) {
+    try {
+      let resultado = await Convidado.create(req.body);
+      res.status(200).json(resultado);
+    } catch (error) {
+      console.log("[ConvidadoController -> adicionar]: " + error);
+      res
+        .status(500)
+        .send("<p> Infelizmente houve um erro ou adicionar o convidado!</p>");
+    }
+  }
+
+  static async deletar(req, res) {
     let idDelete = req.params.id;
-    let indexDel = null;
 
-    convidados.forEach((conv, index) => {
-      if (conv._id == parseInt(idDelete)) {
-        indexDel = index;
-      }
-    });
+    if (!idDelete)
+      return res.status(400).send("<p> ID do objeto não informado! </p>");
 
-    if (indexDel != null) {
-      res.status(200).json(convidados.splice(indexDel, 1));
+    try {
+      let resultado = await Convidado.findByIdAndDelete({ _id: idDelete });
+      res.status(200).json(resultado);
+    } catch (error) {
+      console.log("[ConvidadoController -> deletar]: " + error);
+      res
+        .status(500)
+        .send("<p> Infelizmente houve um erro ou remover o convidado!</p>");
     }
-
-    res.status(400).json({});
   }
 
-  static editar(req, res) {
-    let convidadoNovo = req.body;
-    let returnedUpdate = {};
+  static async editar(req, res) {
+    let idUpdate = req.body._id;
 
-    convidados.forEach((conv, index) => {
-      if (conv._id == convidadoNovo._id) {
-        Object.assign(returnedUpdate, conv);
-        conv.nome = convidadoNovo.nome;
-        conv.idade = convidadoNovo.idade;
-        conv.sexo = convidadoNovo.sexo;
-      }
-    });
+    if (!idUpdate)
+      return res.status(400).send("<p> ID do objeto não informado! </p>");
 
-    if (returnedUpdate._id != undefined) {
-      res.status(200).json(returnedUpdate);
+    try {
+      let resultado = await Convidado.findByIdAndUpdate(idUpdate, req.body);
+      res.status(200).json(resultado);
+    } catch (error) {
+      console.log("[ConvidadoController -> editar]: " + error);
+      res
+        .status(500)
+        .send("<p> Infelizmente houve um erro ou editar o convidado!</p>");
     }
-
-    res.status(400).json({});
   }
 }
 

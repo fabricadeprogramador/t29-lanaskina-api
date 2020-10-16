@@ -4,11 +4,11 @@ const Express = require("express");
 const Mongoose = require("mongoose");
 const Cors = require("cors");
 
+const env = process.NODE_ENV || "development";
+const config = require("./config.json")[env];
+
 //Importação dos modelos
 const Convidado = require("./models/Convidado");
-
-//Importação de rota
-const ConvidadoRoute = require("./routes/ConvidadoRoute");
 
 class App {
   constructor() {
@@ -29,7 +29,7 @@ class App {
 
     //Conectar o Mongoose com o Banco de Dados (MongoDB Atlas)
     Mongoose.connect(
-      "mongodb+srv://t29lanaskina:t29lanaskina@cluster0.zronz.mongodb.net/lanaskina-db?retryWrites=true&w=majority",
+      `${config.db.protocolo}://${config.db.user}:${config.db.senha}@${config.db.url}/${config.db.nome}?retryWrites=true&w=majority`,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -41,19 +41,19 @@ class App {
       res.send("<h1>Seja bem-vindo(a) a API Lanaskina!</h1>");
     });
 
+    //Instanciando os modelos, consequentemente registrando os Schemas do Mongoose
+    new Convidado();
+
+    //Importação de rota
+    const ConvidadoRoute = require("./routes/ConvidadoRoute");
+
     //Setando as outras rotas
     new ConvidadoRoute(this.exp);
 
     // Escutando a porta 3000
-    this.exp.listen(3000, () => {
-      console.log("API Lanaskina rodando na porta 3000...");
+    this.exp.listen(config.apiPort, () => {
+      console.log(`API Lanaskina rodando na porta ${config.apiPort}...`);
     });
   }
 }
 new App().init();
-
-//Nome do banco : lanaskina-db
-//User Password: t29lanaskina
-//User Name: t29lanaskina
-
-//link: mongodb+srv://<username>:<password>@cluster0.zronz.mongodb.net/<dbname>?retryWrites=true&w=majority
