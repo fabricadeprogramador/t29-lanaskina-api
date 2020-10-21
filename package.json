@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node App.js",
-    "devr": "nodemon App.js",
+    "dev": "npx nodemon App.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,5 +13,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "mongoose": "^5.10.9"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
   }
 }

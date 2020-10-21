@@ -33,6 +33,7 @@ class App {
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useFindAndModify: false,
       }
     );
 
@@ -51,7 +52,7 @@ class App {
     new ConvidadoRoute(this.exp);
 
     // Escutando a porta 3000
-    this.exp.listen(config.apiPort, () => {
+    this.exp.listen(process.env.PORT || config.apiPort, () => {
       console.log(`API Lanaskina rodando na porta ${config.apiPort}...`);
     });
   }
