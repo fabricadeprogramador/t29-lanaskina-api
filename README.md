@@ -9,5 +9,3 @@
 ## Executar em modo dev com hot reload
 
 > npm run devr
-
-PS.: Necessita do NODEMON instalado.
