@@ -58,6 +58,62 @@ class Empresa extends Schema{
                         default:true
                     },
                 }
+            ],
+            transacoes:[
+                {
+                    ativo:{
+                        type:Boolean,
+                        default:true
+                    },
+                    dataTransacoes:{
+                        type: Date,
+                        required:true,
+                    },
+                    valor:{
+                        type:Number,
+                        required:true
+                    },
+                    status:{
+                        type:String,
+                        required:true
+                    },
+                    produtos:[
+                        {
+                            nome:{
+                                type:String,
+                                required:true
+                            },
+                            valor:{
+                                type:Number,
+                                required:true
+                            }
+                        }
+                    ],
+                    // *********** Verificar com prof, pois acredito que vai puxer pelo id *****
+                    // cliente:{
+                    //     nome:{
+                    //         type:String,
+                    //         required: true
+                    //     },
+                    //     username:{
+                    //         type:String,
+                    //         required: true
+                    //     },
+                    //     senha:{
+                    //         type:String,
+                    //         required: true
+                    //     },
+                    //     role:{
+                    //         type:String,
+                    //         required: true
+                    //     },
+                    //     ativo:{
+                    //         type:Boolean,
+                    //         default: true
+                    //     },
+                    // }
+
+                }
             ]
         })
         //Momento do registro do Schema do Mongoose

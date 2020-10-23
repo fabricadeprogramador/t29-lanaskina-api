@@ -35,9 +35,11 @@ class App {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
-      },
-      console.log("Banco conectado!")
-    );
+      },      
+    )
+      .then(()=>{console.log("Banco conectado!")})
+      .catch((err)=>{console.log("Erro ao conectar ao banco: "+err)})
+
 
     //Registrando a rota raíz da API
     this.exp.get("/", (req, res) => {
