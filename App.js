@@ -9,6 +9,7 @@ const config = require("./config.json")[env];
 
 //Importação dos modelos
 const Convidado = require("./models/Convidado");
+const Empresa = require("./models/Empresa")
 
 class App {
   constructor() {
@@ -34,7 +35,8 @@ class App {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
-      }
+      },
+      console.log("Banco conectado!")
     );
 
     //Registrando a rota raíz da API
@@ -44,12 +46,15 @@ class App {
 
     //Instanciando os modelos, consequentemente registrando os Schemas do Mongoose
     new Convidado();
+    new Empresa();
 
     //Importação de rota
     const ConvidadoRoute = require("./routes/ConvidadoRoute");
+    const EmpresaRoute = require("./routes/EmpresaRoute")
 
     //Setando as outras rotas
     new ConvidadoRoute(this.exp);
+    new EmpresaRoute(this.exp);
 
     // Escutando a porta 3000
     this.exp.listen(process.env.PORT || config.apiPort, () => {
