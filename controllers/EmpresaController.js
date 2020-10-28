@@ -19,12 +19,26 @@ class EmpresaController{
             }, "nome")
           );
         } catch (error) {
-          console.log("[EmpresaController -> buscarPorNome]: " + error);
+          console.log("[EmpresaController -> buscarNomes]: " + error);
           res
             .status(500)
             .send(
               "<p> Infelizmente houve um erro ou buscar Empresa por nome!</p>"
             );
+        }
+    }
+    static async buscarPorId(req,res){
+        try {
+            res.status(200).json(
+                await Empresa.find({_id:req.params.id})
+            )
+        } catch (error) {
+            console.log("[EmpresaController -> buscarPorId]: " + error);
+          res
+            .status(500)
+            .send(
+              "<p> Infelizmente houve um erro ou buscar Empresa por nome!</p>"
+            ); 
         }
     }
     static async adicionar(req,res){
@@ -41,7 +55,13 @@ class EmpresaController{
         res.send("Chamou editar")
     }
     static async excluir(req,res){
-        res.send("Chamou excluir")
+        
+        try {
+            res.status(200).json(await Empresa.findOneAndDelete({_id:req.body._id}))
+        } catch (error) {
+            console.log("[EmpresaController -> excluir]: " + error);
+            res.status(500).send("<p> Infelizmente houve um erro ou excluir empresa!</p>")
+        }
     }
 
 }

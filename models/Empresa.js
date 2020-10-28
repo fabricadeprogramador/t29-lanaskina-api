@@ -70,7 +70,7 @@ class Empresa extends Schema{
                         default:true
                     },
                     dataTransacoes:{
-                        type: Date,
+                        type: String,
                         default: Date.now
                     },
                     valor:{
@@ -92,67 +92,13 @@ class Empresa extends Schema{
                                 required:true
                             }
                         }
-                    ],
-                    //*********** Verificar com prof, pois acredito que vai puxer pelo id *****
+                    ],                    
                     cliente:{
                         nome:{
                             type:String,
                             required: true
-                        },
-                        username:{
-                            type:String,
-                            required: true
-                        },
-                        senha:{
-                            type:String,
-                            required: true
-                        },
-                        role:{
-                            type:String,
-                            required: true
-                        },
-                        ativo:{
-                            type:Boolean,
-                            default: true
-                        },
-                    },
-                    // empresa:{
-                       
-                    //     nome: {
-                    //         type:String,
-                    //         required:true
-                    //     },
-                    //     // cnpj: {
-                    //     //     type:String,
-                    //     //     required:true
-                    //     // },
-                    //     // email: {
-                    //     //     type:String,
-                    //     //     required:true
-                    //     // },
-                    //     status: {
-                    //         type:Boolean,
-                    //         default:true
-                    //     },
-                    //     tel:{
-                    //         type: Number,
-                    //         required:true
-                    //     } ,
-                    //     endereco: {
-                    //       rua: {
-                    //           type:String,
-                    //           required:true
-                    //       },
-                    //       numero:{
-                    //           type:Number,
-                    //           required:true
-                    //       },
-                    //       bairro: {
-                    //           type:String,
-                    //           required:true
-                    //       }
-                    //     }
-                    // }
+                        },                       
+                    },                   
 
                 }
             ]

@@ -8,8 +8,9 @@ class EmpresaRoute{
             .post(EmpresaController.adicionar)
             .delete(EmpresaController.excluir)
         express.route("/empresas/:id")
+            .get(EmpresaController.buscarPorId)
             .put(EmpresaController.editar)
-        express.route("/empresa/nomes")
+        express.route("/empresas/nomes")
             .get(EmpresaController.buscarNomes)
     }
 }
