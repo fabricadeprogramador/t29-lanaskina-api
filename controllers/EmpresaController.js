@@ -11,6 +11,22 @@ class EmpresaController{
             res.status(500).send("<p> Infelizmente houve um erro ou buscar empresa!</p>")
         }
     }
+    static async buscarNomes(req,res){
+            
+        try {
+          res.status(200).json(
+            await Empresa.find({           
+            }, "nome")
+          );
+        } catch (error) {
+          console.log("[EmpresaController -> buscarPorNome]: " + error);
+          res
+            .status(500)
+            .send(
+              "<p> Infelizmente houve um erro ou buscar Empresa por nome!</p>"
+            );
+        }
+    }
     static async adicionar(req,res){
         try {
             if(req.body.nome === "" || req.body.nome === undefined || req.body.cnpj === "" || req.body.cnpj === undefined ) return res.status(404).json({mensagem:"Campos obrigatorios não preenchido"})

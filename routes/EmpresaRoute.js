@@ -9,6 +9,8 @@ class EmpresaRoute{
             .delete(EmpresaController.excluir)
         express.route("/empresas/:id")
             .put(EmpresaController.editar)
+        express.route("/empresa/nomes")
+            .get(EmpresaController.buscarNomes)
     }
 }
 module.exports = EmpresaRoute;

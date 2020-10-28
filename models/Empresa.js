@@ -7,7 +7,8 @@ class Empresa extends Schema{
         super({
             nome:{
                 type:String,
-                required:true
+                required:true,
+                unique:true
             },
             cnpj:{
                 type:String,
@@ -61,13 +62,16 @@ class Empresa extends Schema{
             ],
             transacoes:[
                 {
+                    empresaNome:{
+                        type:String
+                    },
                     ativo:{
                         type:Boolean,
                         default:true
                     },
                     dataTransacoes:{
                         type: Date,
-                        required:true,
+                        default: Date.now
                     },
                     valor:{
                         type:Number,
@@ -89,28 +93,65 @@ class Empresa extends Schema{
                             }
                         }
                     ],
-                    // *********** Verificar com prof, pois acredito que vai puxer pelo id *****
-                    // cliente:{
-                    //     nome:{
+                    //*********** Verificar com prof, pois acredito que vai puxer pelo id *****
+                    cliente:{
+                        nome:{
+                            type:String,
+                            required: true
+                        },
+                        username:{
+                            type:String,
+                            required: true
+                        },
+                        senha:{
+                            type:String,
+                            required: true
+                        },
+                        role:{
+                            type:String,
+                            required: true
+                        },
+                        ativo:{
+                            type:Boolean,
+                            default: true
+                        },
+                    },
+                    // empresa:{
+                       
+                    //     nome: {
                     //         type:String,
-                    //         required: true
+                    //         required:true
                     //     },
-                    //     username:{
-                    //         type:String,
-                    //         required: true
-                    //     },
-                    //     senha:{
-                    //         type:String,
-                    //         required: true
-                    //     },
-                    //     role:{
-                    //         type:String,
-                    //         required: true
-                    //     },
-                    //     ativo:{
+                    //     // cnpj: {
+                    //     //     type:String,
+                    //     //     required:true
+                    //     // },
+                    //     // email: {
+                    //     //     type:String,
+                    //     //     required:true
+                    //     // },
+                    //     status: {
                     //         type:Boolean,
-                    //         default: true
+                    //         default:true
                     //     },
+                    //     tel:{
+                    //         type: Number,
+                    //         required:true
+                    //     } ,
+                    //     endereco: {
+                    //       rua: {
+                    //           type:String,
+                    //           required:true
+                    //       },
+                    //       numero:{
+                    //           type:Number,
+                    //           required:true
+                    //       },
+                    //       bairro: {
+                    //           type:String,
+                    //           required:true
+                    //       }
+                    //     }
                     // }
 
                 }
