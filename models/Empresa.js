@@ -93,12 +93,10 @@ class Empresa extends Schema{
                             }
                         }
                     ],                    
-                    cliente:{
-                        nome:{
-                            type:String,
-                            required: true
-                        },                       
-                    },                   
+                    cliente: {
+                        type: Schema.Types.ObjectId,
+                        ref: "Cliente",
+                      },                   
 
                 }
             ]

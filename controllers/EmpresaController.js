@@ -5,18 +5,20 @@ class EmpresaController{
 
     static async buscarTodos(req,res){
         try {
-            res.status(200).json(await Empresa.find())
+            res.status(200).json(await Empresa.find({})
+            .populate("transacoes.cliente", "nome ")
+            .exec())
         } catch (error) {
             console.log("[EmpresaController -> buscarTodos]: " + error);
             res.status(500).send("<p> Infelizmente houve um erro ou buscar empresa!</p>")
         }
     }
     static async buscarNomes(req,res){
-            
+         //   console.log("chamou");
         try {
           res.status(200).json(
             await Empresa.find({           
-            }, "nome")
+            },"nome")
           );
         } catch (error) {
           console.log("[EmpresaController -> buscarNomes]: " + error);
@@ -28,9 +30,11 @@ class EmpresaController{
         }
     }
     static async buscarPorId(req,res){
+        
         try {
             res.status(200).json(
-                await Empresa.find({_id:req.params.id})
+                await Empresa.find({_id:req.params.id}).populate("transacoes.cliente", "nome ")
+                .exec()
             )
         } catch (error) {
             console.log("[EmpresaController -> buscarPorId]: " + error);
