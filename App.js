@@ -9,7 +9,9 @@ const config = require("./config.json")[env];
 
 //Importação dos modelos
 const Convidado = require("./models/Convidado");
-const Empresa = require("./models/Empresa")
+const Empresa = require("./models/Empresa");
+const Usuario = require("./models/Usuario");
+const Cliente = require("./models/Cliente");
 
 class App {
   constructor() {
@@ -35,11 +37,15 @@ class App {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
-      },      
+        useCreateIndex: true,
+      }
     )
-      .then(()=>{console.log("Banco conectado!")})
-      .catch((err)=>{console.log("Erro ao conectar ao banco: "+err)})
-
+      .then(() => {
+        console.log("Banco conectado!");
+      })
+      .catch((err) => {
+        console.log("Erro ao conectar ao banco: " + err);
+      });
 
     //Registrando a rota raíz da API
     this.exp.get("/", (req, res) => {
@@ -49,14 +55,20 @@ class App {
     //Instanciando os modelos, consequentemente registrando os Schemas do Mongoose
     new Convidado();
     new Empresa();
+    new Usuario();
+    new Cliente();
 
     //Importação de rota
     const ConvidadoRoute = require("./routes/ConvidadoRoute");
-    const EmpresaRoute = require("./routes/EmpresaRoute")
+    const EmpresaRoute = require("./routes/EmpresaRoute");
+    const UsuarioRoute = require("./routes/UsuarioRoute");
+    const ClienteRoute = require("./routes/ClienteRoute");
 
     //Setando as outras rotas
     new ConvidadoRoute(this.exp);
     new EmpresaRoute(this.exp);
+    new UsuarioRoute(this.exp);
+    new ClienteRoute(this.exp);
 
     // Escutando a porta 3000
     this.exp.listen(process.env.PORT || config.apiPort, () => {
