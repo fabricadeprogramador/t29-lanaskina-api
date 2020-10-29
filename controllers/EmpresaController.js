@@ -47,9 +47,9 @@ class EmpresaController{
     }
     static async adicionar(req,res){
         try {
-            if(req.body.nome === "" || req.body.nome === undefined || req.body.cnpj === "" || req.body.cnpj === undefined ) return res.status(404).json({mensagem:"Campos obrigatorios não preenchido"})
-            
+            if(req.body.nome === "" || req.body.nome === undefined || req.body.cnpj === "" || req.body.cnpj === undefined ) return res.status(404).json({mensagem:"Campos obrigatorios não preenchido"})           
             res.status(200).json(await Empresa.create(req.body))
+            
         } catch (error) {
             console.log("[EmpresaController -> adicionar]: " + error);
             res.status(500).send("<p> Infelizmente houve um erro ou adicionar empresa!</p>")
