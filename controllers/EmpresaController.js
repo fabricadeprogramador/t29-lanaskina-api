@@ -56,7 +56,15 @@ class EmpresaController{
         }
     }
     static async editar(req,res){
-        res.send("Chamou editar")
+       if(!req.params.id) return res.status(404).json({mensagem:"Favor informar ID para atualizar"})
+      
+       try {
+           res.status(200).json(await Empresa.findOneAndUpdate({_id:req.params.id},req.body, {new:true}))
+       } catch (error) {
+        console.log("[EmpresaController -> Editar]: " + error);
+        res.status(500).send("<p> Infelizmente houve um erro ou excluir empresa!</p>")
+       } 
+       
     }
     static async excluir(req,res){
         
