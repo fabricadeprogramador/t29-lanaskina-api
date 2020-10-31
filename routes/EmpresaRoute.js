@@ -13,6 +13,9 @@ class EmpresaRoute{
         express.route("/empresas/:id")
             .get(EmpresaController.buscarPorId)
             .put(EmpresaController.editar)
+        express.route("/empresas/produto/:id")
+            .post(EmpresaController.adicionarProduto)
+            .put(EmpresaController.editarProduto)
 
     }
 }
