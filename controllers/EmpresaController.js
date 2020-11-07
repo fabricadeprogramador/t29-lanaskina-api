@@ -30,10 +30,10 @@ class EmpresaController {
         }
     }
     static async buscarPorId(req, res) {
-
+        
         try {
             res.status(200).json(
-                await Empresa.findOne({ _id: req.params.id }).populate("transacoes.cliente", "nome ")
+                await Empresa.findOne({ _id: req.params.id }).populate("transacoes.cliente", "_id nome ativo")
                     .exec()
             )
         } catch (error) {
