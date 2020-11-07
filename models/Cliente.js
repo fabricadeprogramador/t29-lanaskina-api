@@ -39,6 +39,18 @@ class Cliente extends Schema {
         type: Schema.Types.ObjectId,
         ref: "Usuario",
       },
+      carrinho: [
+        {
+          nome: {
+            type: String,
+            required: true,
+          },
+          valor: {
+            type: Number,
+            required: true,
+          },
+        },
+      ],
     });
 
     //Momento do registro do Schema do Mongoose
