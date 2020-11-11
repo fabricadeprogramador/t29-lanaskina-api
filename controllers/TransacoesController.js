@@ -39,7 +39,7 @@ class TransacoesController {
         }
       });
 
-      return res.json(resposta);
+      return res.status(200).json(resposta);
     } catch (error) {
       console.log("[TransacoesController -> buscarTodos]: " + error);
       res
