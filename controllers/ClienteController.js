@@ -3,9 +3,9 @@ const Mongoose = require("mongoose");
 const Cliente = Mongoose.model("Cliente");
 
 class ClienteController {
-  static async buscarTodos(req, res) {
+  static async buscarTodos(req, res) {    
     try {
-      res.status(200).json(await Cliente.find({}));
+      res.status(200).json(await Cliente.find({}).populate("usuario", "ativo"));
     } catch (error) {
       console.log("[ClienteController -> buscarTodos]: " + error);
       res
@@ -78,18 +78,18 @@ class ClienteController {
   }
 
   static async editar(req, res) {
-    // let idUpdate = req.body._id;
-    // if (!idUpdate)
-    //   return res.status(400).send("<p> ID do objeto não informado! </p>");
-    // try {
-    //   let resultado = await Convidado.findByIdAndUpdate(idUpdate, req.body);
-    //   res.status(200).json(resultado);
-    // } catch (error) {
-    //   console.log("[ConvidadoController -> editar]: " + error);
-    //   res
-    //     .status(500)
-    //     .send("<p> Infelizmente houve um erro ou editar o convidado!</p>");
-    // }
+    
+    try {
+     let clienteAutalizado = await Cliente.findOneAndUpdate({_id:req.body._id}, req.body, {new:true})
+     
+      res.status(200).json(await Cliente.findOneAndUpdate({_id:req.body._id}, req.body, {new:true}))
+    } catch (error) {
+      console.log("[ClienteController -> editar]: " + error);
+      res
+        .status(500)
+        .send("<p> Infelizmente houve um erro ou editar o cliente!</p>");
+    }
+    
   }
 }
 

@@ -8,7 +8,9 @@ class UsuarioRoute {
       .post(UsuarioController.adicionar)
       .put(UsuarioController.editar);
 
-    exp.route("/usuarios/:id").delete(UsuarioController.deletar);
+    exp.route("/usuarios/:id")
+      .delete(UsuarioController.deletar)
+      .post(UsuarioController.ativaInativa)      
 
     exp.route("/usuarios/:nome").get(UsuarioController.buscarPorNome);
   }

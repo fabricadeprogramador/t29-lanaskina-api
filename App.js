@@ -63,14 +63,14 @@ class App {
     const EmpresaRoute = require("./routes/EmpresaRoute");
     const UsuarioRoute = require("./routes/UsuarioRoute");
     const ClienteRoute = require("./routes/ClienteRoute");
-    const TransacoesRoute = require("./routes/TransacoesRoute");
+    const TransacoesRoute = require("./routes/TransacoesRoute");    
 
     //Setando as outras rotas
     new ConvidadoRoute(this.exp);
     new EmpresaRoute(this.exp);
     new UsuarioRoute(this.exp);
     new ClienteRoute(this.exp);
-    new TransacoesRoute(this.exp);
+    new TransacoesRoute(this.exp);    
 
     // Escutando a porta 3000
     this.exp.listen(process.env.PORT || config.apiPort, () => {

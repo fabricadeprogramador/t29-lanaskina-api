@@ -30,11 +30,7 @@ class Cliente extends Schema {
       },
       email: {
         type: String,
-      },
-      ativo: {
-        type: Boolean,
-        default: true,
-      },
+      },      
       usuario: {
         type: Schema.Types.ObjectId,
         ref: "Usuario",

@@ -32,6 +32,20 @@ class UsuarioController {
     //     );
     // }
   }
+  static async ativaInativa(req, res) {
+    
+    try {
+      let resultado = await Usuario.findOne({_id:req.params.id});
+      resultado.ativo = !resultado.ativo      
+      res.status(200).json(await Usuario.findOneAndUpdate({_id:resultado._id}, resultado, {new:true}))     
+     
+    } catch (error) {
+      console.log("[UsuarioController -> ativaInativa]: " + error);
+      res
+        .status(500)
+        .send("<p> Infelizmente houve um erro ou mudar status do Usuario!</p>");
+    }
+  }
 
   static async adicionar(req, res) {
     try {
@@ -61,18 +75,15 @@ class UsuarioController {
   }
 
   static async editar(req, res) {
-    // let idUpdate = req.body._id;
-    // if (!idUpdate)
-    //   return res.status(400).send("<p> ID do objeto não informado! </p>");
-    // try {
-    //   let resultado = await Convidado.findByIdAndUpdate(idUpdate, req.body);
-    //   res.status(200).json(resultado);
-    // } catch (error) {
-    //   console.log("[ConvidadoController -> editar]: " + error);
-    //   res
-    //     .status(500)
-    //     .send("<p> Infelizmente houve um erro ou editar o convidado!</p>");
-    // }
+    try {                
+      res.status(200).json(await Usuario.findOneAndUpdate({_id:req.body._id}, req.body, {new:true}))     
+     
+    } catch (error) {
+      console.log("[UsuarioController -> editar]: " + error);
+      res
+        .status(500)
+        .send("<p> Infelizmente houve um erro ao atualizar o Usuario!</p>");
+    }
   }
 }
 

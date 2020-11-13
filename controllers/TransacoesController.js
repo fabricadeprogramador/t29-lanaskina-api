@@ -27,9 +27,7 @@ class TransacoesController {
   static async buscarTodos(req, res) {
     try {
       let resposta = [];
-      let empresas = await Empresa.find({})
-        .select("transacoes")
-        .populate("transacoes.cliente", "nome");
+      let empresas = await Empresa.find({}).select("transacoes").populate("transacoes.cliente", "nome");
 
       empresas.forEach((empresa) => {
         if (empresa.transacoes.length > 0) {
