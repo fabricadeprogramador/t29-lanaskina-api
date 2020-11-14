@@ -10,12 +10,18 @@ class EmpresaRoute{
             //Tem que chamar antes do ID, pois depois ele entende a rota buscarPorId
         express.route("/empresas/nomes")
             .get(EmpresaController.buscarNomes)    
+        express.route("/empresas/totalizadores")
+            .get(EmpresaController.totalizadores)
+        express.route("/empresas/totalizadores/:id")
+            .get(EmpresaController.totalizadoresPorEmpresa)
         express.route("/empresas/:id")
             .get(EmpresaController.buscarPorId)
             .put(EmpresaController.editar)
         express.route("/empresas/produto/:id")
             .post(EmpresaController.adicionarProduto)
             .put(EmpresaController.editarProduto)
+        
+                
 
     }
 }

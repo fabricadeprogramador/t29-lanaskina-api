@@ -10,6 +10,10 @@ class Empresa extends Schema{
                 required:true,
                 unique:true
             },
+            dataCriacao:{
+                type: Date,
+                default: new Date
+            },
             cnpj:{
                 type:String,
                 required:true

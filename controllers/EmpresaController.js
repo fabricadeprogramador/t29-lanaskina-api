@@ -1,5 +1,6 @@
 const Mongoose = require("mongoose")
 const Empresa = Mongoose.model("Empresas")
+const Cliente = Mongoose.model("Cliente")
 
 class EmpresaController {
 
@@ -120,20 +121,94 @@ class EmpresaController {
         try {
             res.status(200).json(await Empresa.findOneAndUpdate({ _id: req.params.id }, { $set: { produtos: arrayAtualizado } }, { new: true }));
         } catch (error) {
-            res.status(500).json({ mensagem: "Erro ao atualizar produto" })
+            console.log("[EmpresaController -> editarProduto]: " + error);
+            res.status(500).send("<p> Infelizmente houve um erro ao atualizar produto!</p>")           
         }
         
-        // .then((arrayAtualizado)=>{
-        //    try {
-        //     res.status(200).json(await Empresa.findOneAndUpdate({_id:req.params.id}, {$set :{ produtos: array}}, {new:true}));
-        //    } catch (error) {
-        //        res.status(500).json({mensagem:"Erro ao atualizar produto"})
-        //    }
-        // })
-        // .catch((err)=>{
-        //     res.status(500).json({mensagem:"Erro ao buscar produto na empresa de id:"+req.params.id})
-        // })
     }
+    static async totalizadores(req,res){
+      try {
+        let totalizadores = {totalAtual:{}, totalMes:{} };
+        let mesAnoAtual = JSON.stringify(new Date()).slice(1,8);
+
+        let todosCliente = await Cliente.find();       
+        let todasEmpresas = await Empresa.find();
+
+        totalizadores.totalAtual.clientes = todosCliente.length;        
+        totalizadores.totalAtual.empresas = todasEmpresas.length;
+
+        //Incia contagem para que no for consiga implementar contador
+        totalizadores.totalMes.empresas =0;
+        totalizadores.totalMes.clientes =0;
+        totalizadores.totalMes.movimentacao = 0;
+        totalizadores.totalAtual.movimentacao = 0;
+
+        todosCliente.forEach((cliente)=>{
+            let dataCriacaoCliente =JSON.stringify(cliente.dataCriacao).slice(1,8)
+            if(dataCriacaoCliente == mesAnoAtual){               
+                totalizadores.totalMes.clientes += 1                           
+            }
+        })
+        
+        
+        todasEmpresas.forEach((empresa)=>{
+            let dataCriacaoEmpresa =JSON.stringify(empresa.dataCriacao).slice(1,8);  
+            //verifica empresas cadastrada no mes            
+            if(dataCriacaoEmpresa == mesAnoAtual){               
+                totalizadores.totalMes.empresas += 1                           
+            }
+
+            
+            empresa.transacoes.forEach((transacao)=>{
+                let dataCriacaoTransacao =JSON.stringify(transacao.dataTransacoes).slice(1,8);
+                //verifica Total movimentação até o mes atual
+               if(transacao.status == "Concluido"){                                    
+                    totalizadores.totalAtual.movimentacao += transacao.valor;
+                    //verifica se a movimentação é do mes atual
+                    if(dataCriacaoTransacao == mesAnoAtual){
+                        totalizadores.totalMes.movimentacao += transacao.valor
+                    }
+                }                
+            })
+
+        })
+        //10% de comissão
+       totalizadores.totalAtual.receita = totalizadores.totalAtual.movimentacao*0.1;
+       totalizadores.totalMes.receita = totalizadores.totalMes.movimentacao*0.1;
+       res.status(200).json(totalizadores)
+        let newData = new Date();
+       // console.log(newData)
+       
+      } catch (error) {
+        console.log("[EmpresaController -> totalizadores]: " + error);
+        res.status(500).send("<p> Infelizmente houve um erro ao buscar totalizadores!</p>")  
+      }
+    }
+    static async totalizadoresPorEmpresa(req,res){
+        let totalizadorPorEmpresa = {};
+        totalizadorPorEmpresa.movimentacao = 0;
+
+        try {
+            let empresa = await Empresa.findOne({_id:req.params.id});
+            totalizadorPorEmpresa.totalTransacoes = empresa.transacoes.length;
+            //verifica se tem transação antes do for
+            if(empresa.transacoes.length>0){
+                empresa.transacoes.forEach((trans)=>{
+                    if(trans.status == "Concluido"){
+                        totalizadorPorEmpresa.movimentacao += trans.valor
+                    }
+                })
+            }
+            totalizadorPorEmpresa.receita =  totalizadorPorEmpresa.movimentacao*0.1;
+
+            res.status(200).json(totalizadorPorEmpresa);
+            
+        } catch (error) {
+         console.log("[EmpresaController -> totalizadoresPorEmpresa]: " + error);
+        res.status(500).send("<p> Infelizmente houve um erro ao buscar totalizadoresPorEmpresa!</p>") 
+        }
+       
+    }  
 
 }
 module.exports = EmpresaController;

@@ -35,6 +35,10 @@ class Cliente extends Schema {
         type: Schema.Types.ObjectId,
         ref: "Usuario",
       },
+      dataCriacao:{
+        type: Date,
+        default: new Date
+      },
       carrinho: [
         {
           nome: {
