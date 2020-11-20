@@ -53,6 +53,9 @@ class Empresa extends Schema {
             type: String,
             required: true
           },
+          imagem: {
+            type: String
+          },
           descricao: {
             type: String,
             required: true
