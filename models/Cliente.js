@@ -1,61 +1,67 @@
-"use strict";
+'use strict'
 
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose')
 
 class Cliente extends Schema {
   constructor() {
     super({
       nome: {
         type: String,
-        required: true,
+        required: true
       },
       endereco: {
         rua: { type: String },
         numero: { type: Number },
-        bairro: { type: String },
+        bairro: { type: String }
       },
       dataNascimento: {
-        type: String,
+        type: String
       },
       cpf: {
         type: String,
         required: true,
-        unique: true,
+        unique: true
       },
       telefone: {
-        type: String,
+        type: String
       },
       sexo: {
-        type: String,
+        type: String
       },
       email: {
-        type: String,
-      },      
+        type: String
+      },
       usuario: {
         type: Schema.Types.ObjectId,
-        ref: "Usuario",
+        ref: 'Usuario'
       },
-      dataCriacao:{
+      dataCriacao: {
         type: Date,
-        default: new Date
+        default: new Date()
       },
-      carrinho: [
-        {
-          nome: {
-            type: String,
-            required: true,
-          },
-          valor: {
-            type: Number,
-            required: true,
-          },
-        },
-      ],
-    });
+      carrinho: {
+        produtos: [
+          {
+            empresa: {
+              type: String,
+              required: true
+            },
+            produto: {
+              type: String,
+              required: true
+            },
+            quantidade: {
+              type: Number,
+              required: true
+            }
+          }
+        ]
+      }
+    })
 
     //Momento do registro do Schema do Mongoose
-    model("Cliente", this);
+    model('Cliente', this)
   }
 }
 
-module.exports = Cliente;
+module.exports = Cliente

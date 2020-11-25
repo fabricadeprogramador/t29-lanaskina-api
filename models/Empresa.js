@@ -100,6 +100,10 @@ class Empresa extends Schema {
               valor: {
                 type: Number,
                 required: true
+              },
+              estoque: {
+                type: Number,
+                required: true
               }
             }
           ],
