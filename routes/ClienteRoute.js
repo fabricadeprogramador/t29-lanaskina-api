@@ -8,6 +8,8 @@ class ClienteRoute {
       .post(ClienteController.adicionar)
       .put(ClienteController.editar)
 
+    exp.route('/clientes-carrinho/:cliente_id')
+       .get(ClienteController.buscarCarrinho)
     exp
       .route('/clientes/adicionar-ao-carrinho/:cliente_id')
       .post(ClienteController.adicionarAoCarrinho)

@@ -1,6 +1,7 @@
 'use strict'
 const Mongoose = require('mongoose')
 const Cliente = Mongoose.model('Cliente')
+const Empresa = Mongoose.model('Empresas')
 
 class ClienteController {
   static async buscarTodos(req, res) {
@@ -11,6 +12,31 @@ class ClienteController {
       res
         .status(500)
         .send('<p> Infelizmente houve um erro ou buscar Clientes!</p>')
+    }
+  }
+  static async buscarCarrinho(req,res){   
+    try {
+      let idCliente = req.params.cliente_id;
+      
+      console.log(idCliente)
+      let cliente = await Cliente.findById(idCliente)
+      let empresa = await Empresa.findById(cliente.carrinho.produtos[0].empresa);
+      //res.json(await Cliente.findById(idCliente))
+      let produtosDoCarrinho = [];
+      cliente.carrinho.produtos.forEach((produtos)=>{
+        empresa.produtos.forEach((produtoNaEmpresa)=>{
+          if(produtoNaEmpresa._id == produtos.produto){
+            let produto = JSON.parse(JSON.stringify(produtoNaEmpresa))
+            produto.qtd = produtos.quantidade           
+            produtosDoCarrinho.push(produto)
+          }
+        })
+      })
+
+      res.status(200).json(produtosDoCarrinho)
+
+    } catch (error) {
+      
     }
   }
 
@@ -40,13 +66,11 @@ class ClienteController {
 
       let cliente = await Cliente.findById(clienteId)
 
-      console.log('CLIENTE ENCONTRADO: ' + JSON.stringify(cliente))
-
+      
       if (!cliente) res.status(400).json('Cliente não encontrado')
 
       cliente.carrinho.produtos.push(req.body)
-      console.log('CLIENTE DEPOIS DA ADIÇÃO: ' + JSON.stringify(cliente))
-
+      
       res
         .status(200)
         .json(await Cliente.findOneAndUpdate({ _id: clienteId }, cliente))
