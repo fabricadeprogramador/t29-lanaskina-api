@@ -209,6 +209,26 @@ class EmpresaController {
         }
        
     }  
+    static async criaTransacoes(req, res){
+       try {
+           
+           let empresa = await Empresa.findOne({_id:req.params.idEmpresa})  
+           let transacao = req.body   
+           transacao.empresaNome = empresa.nome         
+           empresa.transacoes.push(req.body);
+           await Empresa.findOneAndUpdate({_id:req.params.idEmpresa}, empresa, {new:true})
+
+           let respostaCliente = await Cliente.findOne({_id:req.body.cliente})
+           respostaCliente.carrinho.produtos = []
+           
+           res.status(200).json(await Cliente.findOneAndUpdate({_id:req.body.cliente}, respostaCliente, {new:true}))
+
+           
+       } catch (error) {
+        console.log("[EmpresaController -> criaTransacoes]: " + error);
+        res.status(500).send("<p> Infelizmente houve um erro ao finalizar Pagamento!</p>") 
+       }
+    }
 
 }
 module.exports = EmpresaController;

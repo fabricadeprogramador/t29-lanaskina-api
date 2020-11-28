@@ -12,6 +12,8 @@ class EmpresaRoute{
             .get(EmpresaController.buscarNomes)    
         express.route("/empresas/totalizadores")
             .get(EmpresaController.totalizadores)
+        express.route("/empresas/transacoes/:idEmpresa")
+            .post(EmpresaController.criaTransacoes)
         express.route("/empresas/totalizadores/:id")
             .get(EmpresaController.totalizadoresPorEmpresa)
         express.route("/empresas/:id")

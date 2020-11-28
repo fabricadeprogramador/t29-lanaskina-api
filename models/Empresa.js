@@ -80,10 +80,10 @@ class Empresa extends Schema {
             default: true
           },
           dataTransacoes: {
-            type: String,
+            type: Date,
             default: Date.now
           },
-          valor: {
+          valorTotal: {
             type: Number,
             required: true
           },
@@ -101,7 +101,8 @@ class Empresa extends Schema {
                 type: Number,
                 required: true
               },
-              estoque: {
+              //Verificar com o professor porque estoque na transação ao inves de produtos
+              quantidade: {
                 type: Number,
                 required: true
               }

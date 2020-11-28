@@ -14,29 +14,88 @@ class ClienteController {
         .send('<p> Infelizmente houve um erro ou buscar Clientes!</p>')
     }
   }
-  static async buscarCarrinho(req,res){   
+  static async buscarCarrinho(req, res) {
     try {
       let idCliente = req.params.cliente_id;
-      
-      console.log(idCliente)
-      let cliente = await Cliente.findById(idCliente)
-      let empresa = await Empresa.findById(cliente.carrinho.produtos[0].empresa);
-      //res.json(await Cliente.findById(idCliente))
-      let produtosDoCarrinho = [];
-      cliente.carrinho.produtos.forEach((produtos)=>{
-        empresa.produtos.forEach((produtoNaEmpresa)=>{
-          if(produtoNaEmpresa._id == produtos.produto){
-            let produto = JSON.parse(JSON.stringify(produtoNaEmpresa))
-            produto.qtd = produtos.quantidade           
-            produtosDoCarrinho.push(produto)
-          }
-        })
-      })
 
-      res.status(200).json(produtosDoCarrinho)
+      let cliente = await Cliente.findById(idCliente)
+
+      if (JSON.parse(JSON.stringify(cliente.carrinho.produtos)).length > 0) {
+        let empresa = await Empresa.findById(cliente.carrinho.produtos[0].empresa);
+
+        let produtosDoCarrinho = [];
+        cliente.carrinho.produtos.forEach((produtos) => {
+
+          empresa.produtos.forEach((produtoNaEmpresa) => {
+
+            if (produtoNaEmpresa._id == produtos.produto) {
+              let produto = JSON.parse(JSON.stringify(produtos))
+              produto.nome = produtoNaEmpresa.nome
+              produto.valor = produtoNaEmpresa.valor
+              produto.imagem = produtoNaEmpresa.imagem
+              produtosDoCarrinho.push(produto)
+
+            }
+          })
+        })
+        res.status(200).json(produtosDoCarrinho)
+      } else {
+        res.status(204)
+          .send('<p>Não existe produtos no carrinho</p>')
+      }
 
     } catch (error) {
-      
+      console.log('[ClienteController -> buscarCarrinho]: ' + error)
+      res
+        .status(500)
+        .send('<p> Infelizmente houve um erro ao  buscar Carrinho!</p>')
+    }
+  }
+
+  ///Verificar com professor pq essa função está sendo chamada ao carregar carrinho no front-end
+
+  static async excluirProdutoCarrinho(req, res) {
+    try {
+      let idCliente = req.params.cliente_id;
+
+      let buscaCliente = await Cliente.findOne({ _id: idCliente })
+      buscaCliente.carrinho.produtos = await req.body;
+
+      let carrinhoAtualizado = await Cliente.findOneAndUpdate({ _id: idCliente }, buscaCliente, { new: true })
+
+      var produtosDoCarrinho = [];
+
+      //verifica se existe produtos para excluir
+      if (carrinhoAtualizado.carrinho.produtos.length > 0) {
+        // console.log('1')
+        let empresa = await Empresa.findById(carrinhoAtualizado.carrinho.produtos[0].empresa);
+        carrinhoAtualizado.carrinho.produtos.forEach((produtos) => {
+
+
+          empresa.produtos.forEach((produtoNaEmpresa) => {
+
+            if (produtoNaEmpresa._id == produtos.produto) {
+              let produto = JSON.parse(JSON.stringify(produtos))
+              produto.nome = produtoNaEmpresa.nome
+              produto.valor = produtoNaEmpresa.valor
+              produto.imagem = produtoNaEmpresa.imagem
+              produtosDoCarrinho.push(produto)
+
+            }
+          })
+        })
+        res.status(200).json(produtosDoCarrinho)
+      } else {
+        //console.log('2')
+
+        res.status(200).json(produtosDoCarrinho)
+      }
+
+    } catch (error) {
+      console.log('[ClienteController -> excluirProdutoCarrinho]: ' + error)
+      res
+        .status(500)
+        .send('<p> Infelizmente houve um erro ao  excluir produto do Carrinho!</p>')
     }
   }
 
@@ -65,15 +124,27 @@ class ClienteController {
       if (!req.body) res.status(400).json('Produto faltando')
 
       let cliente = await Cliente.findById(clienteId)
-
-      
       if (!cliente) res.status(400).json('Cliente não encontrado')
 
-      cliente.carrinho.produtos.push(req.body)
-      
-      res
-        .status(200)
-        .json(await Cliente.findOneAndUpdate({ _id: clienteId }, cliente))
+      //verificar se a campra é da mesma empresa      
+      if (JSON.parse(JSON.stringify(cliente.carrinho.produtos)).length > 1) {
+        
+        let idEmpresa = cliente.carrinho.produtos[0].empresa
+        let empresaDiferente = false;
+        cliente.carrinho.produtos.forEach((produto) => {
+          if (produto.empresa == idEmpresa) {
+            empresaDiferente = true
+          }
+        })
+        if (empresaDiferente) {     
+          //verificar com o professor como pegar o status 401 no front... nao consigo pegar a resposta lá     
+          res.status(202).json("Não autorizado.Existe produtos no carrinho de outra empresa!")
+        } else {
+          cliente.carrinho.produtos.push(req.body)
+          res.status(200).json(await Cliente.findOneAndUpdate({ _id: clienteId }, cliente))
+        }
+      }
+
     } catch (error) {
       console.log('[ClienteController -> adicionarAoCarrinho]: ' + error)
       res
