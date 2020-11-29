@@ -14,6 +14,32 @@ class ClienteController {
         .send('<p> Infelizmente houve um erro ou buscar Clientes!</p>')
     }
   }
+  static async buscarHistorico(req, res) {
+   try {
+    let idCliente = req.params.idCliente
+    let historicoCliente = [];
+
+    let empresas = await Empresa.find();
+    empresas.forEach((empresa) => {
+      empresa.transacoes.forEach((transacao) => {
+        if (transacao.cliente == idCliente) {
+          let historico = {};
+
+          historico._idTransacao = transacao._id
+          historico.valorTotal = transacao.valorTotal
+          historico.dataTransacao = transacao.dataTransacoes
+          historicoCliente.push(historico)
+        }
+      })
+    })
+    res.status(200).json(historicoCliente)
+   } catch (error) {
+    console.log('[ClienteController -> buscarHistorico]: ' + error)
+    res
+      .status(500)
+      .send('<p> Infelizmente houve um erro ao  buscar Historico!</p>')
+   }
+  }
   static async buscarCarrinho(req, res) {
     try {
       let idCliente = req.params.cliente_id;
@@ -118,6 +144,7 @@ class ClienteController {
 
   static async adicionarAoCarrinho(req, res) {
     try {
+
       let clienteId = req.params.cliente_id
       if (!clienteId) res.status(400).json('O cliente deve ser informado')
 
@@ -125,24 +152,22 @@ class ClienteController {
 
       let cliente = await Cliente.findById(clienteId)
       if (!cliente) res.status(400).json('Cliente não encontrado')
+      cliente.carrinho.produtos.push(req.body)
 
-      //verificar se a campra é da mesma empresa      
+      //verificar se ja tem mais de um produto no carrinho para verificar se é da mesma empresa, caso seja primeiro nem faz a verificação    
       if (JSON.parse(JSON.stringify(cliente.carrinho.produtos)).length > 1) {
-        
-        let idEmpresa = cliente.carrinho.produtos[0].empresa
-        let empresaDiferente = false;
-        cliente.carrinho.produtos.forEach((produto) => {
-          if (produto.empresa == idEmpresa) {
-            empresaDiferente = true
-          }
-        })
-        if (empresaDiferente) {     
-          //verificar com o professor como pegar o status 401 no front... nao consigo pegar a resposta lá     
-          res.status(202).json("Não autorizado.Existe produtos no carrinho de outra empresa!")
-        } else {
-          cliente.carrinho.produtos.push(req.body)
-          res.status(200).json(await Cliente.findOneAndUpdate({ _id: clienteId }, cliente))
-        }
+
+        //verificar com o professor como pegar o status 401 no front... nao consigo pegar a resposta lá  
+        //Verifica se é a mesma Empresa   
+
+        let mesmaEmpresa = ClienteController.verificaSeMesmaEmpresa(cliente.carrinho)
+        if (mesmaEmpresa) return res.status(202).json("Não autorizado.Existe produtos no carrinho de outra empresa!")
+
+        res.status(200).json(await Cliente.findOneAndUpdate({ _id: clienteId }, cliente))
+
+      } else {
+        //console.log("else", cliente.carrinho.produtos)
+        res.status(200).json(await Cliente.findOneAndUpdate({ _id: clienteId }, cliente))
       }
 
     } catch (error) {
@@ -153,6 +178,19 @@ class ClienteController {
           '<p> Infelizmente houve um erro ou adicionar produto ao carrinho !</p>'
         )
     }
+  }
+  static verificaSeMesmaEmpresa(carrinho) {
+    let idEmpresa = carrinho.produtos[0].empresa
+    let empresaDiferente = false;
+    carrinho.produtos.forEach((produto) => {
+
+      if (produto.empresa != idEmpresa) {
+        empresaDiferente = true
+      }
+
+    })
+    return empresaDiferente;
+
   }
 
   static async buscarPorNome(req, res) {
